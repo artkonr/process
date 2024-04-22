@@ -11,8 +11,16 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Program handling utilities.
+ */
 class Util {
 
+    /**
+     * Processes the byte array to remove whitespace characters etc.
+     * @param bytes source array
+     * @return processed array
+     */
     static byte[] readByteArray(byte[] bytes) {
         if (bytes.length > 1) {
             int end = bytes.length - 1;
@@ -31,11 +39,16 @@ class Util {
         }
     }
 
+    /**
+     * Safely reads {@link BufferedReader}.
+     * @param reader reader
+     * @return byte array wrapped in a {@link Result}
+     */
     static Result<byte[], CmdException> read(BufferedReader reader) {
         try (
                 BufferedReader input = reader;
                 ByteArrayOutputStream buf = new ByteArrayOutputStream();
-                OutputStreamWriter writer = new OutputStreamWriter(buf);
+                OutputStreamWriter writer = new OutputStreamWriter(buf)
         ) {
             input.transferTo(writer);
             writer.flush();
@@ -45,6 +58,12 @@ class Util {
         }
     }
 
+    /**
+     * Creates an {@link ProcessBuilder} out out a collection of text commands.
+     * @param exec program name
+     * @param arguments program arguments
+     * @return process builder
+     */
     static ProcessBuilder formulate(String exec, String... arguments) {
         List<String> all = new ArrayList<>();
         all.add(exec);
@@ -59,10 +78,20 @@ class Util {
                 .redirectError(ProcessBuilder.Redirect.PIPE);
     }
 
+    /**
+     * Extracts command text from a {@link ProcessBuilder}.
+     * @param pb process builder
+     * @return command text
+     */
     static String getCmd(ProcessBuilder pb) {
         return String.join(" ", pb.command());
     }
 
+    /**
+     * Extracts command text from a {@link ProcessBuilder}.
+     * @param pipeline process builders
+     * @return command text
+     */
     static String getCmd(List<ProcessBuilder> pipeline) {
         return pipeline.stream()
                 .map(Util::getCmd)

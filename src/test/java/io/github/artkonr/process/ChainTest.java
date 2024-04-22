@@ -1,12 +1,11 @@
 package io.github.artkonr.process;
 
 import io.github.artkonr.result.Result;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
-import org.slf4j.simple.SimpleLogger;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -17,7 +16,7 @@ class ChainTest {
     void factory__process_builder__ok() {
         ProcessBuilder pb = new ProcessBuilder("pwd");
         Chain shell = Chain.from(pb);
-        assertEquals(List.of(pb), shell.getPipeline());
+        assertEquals(List.of(pb), shell.pipeline);
     }
 
     @Test
@@ -29,7 +28,7 @@ class ChainTest {
     void factory__command__ok() {
         Cmd pb = Cmd.from("pwd");
         Chain shell = Chain.from(pb);
-        assertEquals(List.of(pb.handle), shell.getPipeline());
+        assertEquals(List.of(pb.handle), shell.pipeline);
     }
 
     @Test
@@ -42,7 +41,7 @@ class ChainTest {
         Chain shell = Chain.from("tr", "-d", "a");
         assertEquals(
                 List.of(List.of("tr", "-d", "a")),
-                shell.getPipeline().stream().map(ProcessBuilder::command).toList()
+                shell.pipeline.stream().map(ProcessBuilder::command).toList()
         );
     }
 
@@ -59,7 +58,7 @@ class ChainTest {
 
         assertEquals(
                 List.of(List.of("pwd"), List.of("tr", "-d", "/")),
-                chain.getPipeline().stream().map(ProcessBuilder::command).toList()
+                chain.pipeline.stream().map(ProcessBuilder::command).toList()
         );
     }
 
@@ -74,7 +73,7 @@ class ChainTest {
         Chain chain = shell.pipeTo("tr", "-d", "/");
         assertEquals(
                 List.of(List.of("pwd"), List.of("tr", "-d", "/")),
-                chain.getPipeline().stream().map(ProcessBuilder::command).toList()
+                chain.pipeline.stream().map(ProcessBuilder::command).toList()
         );
     }
 
@@ -90,7 +89,7 @@ class ChainTest {
         Chain chain = first.pipeTo(then);
         assertEquals(
                 List.of(List.of("pwd"), List.of("tr", "-d", "/")),
-                chain.getPipeline().stream().map(ProcessBuilder::command).toList()
+                chain.pipeline.stream().map(ProcessBuilder::command).toList()
         );
     }
 
@@ -230,7 +229,7 @@ class ChainTest {
 
         List<Output> intermediate = converted.subList(0, converted.size() - 1);
         Output fin = converted.get(converted.size() - 1);
-        return new Chain.Output(intermediate, fin);
+        return Chain.Output.from(fin, intermediate);
     }
 
     private record ProcessCompletion(String cmd, boolean ok) { }

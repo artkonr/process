@@ -1,7 +1,5 @@
 package io.github.artkonr.process;
 
-import io.github.artkonr.result.Result;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -74,35 +72,7 @@ class DataTest {
 
     @Test
     void encode_with_charset_null_arg() {
-        assertThrows(IllegalArgumentException.class, () -> data.encode((Charset) null));
-    }
-
-    @Test
-    void encode_custom_empty() {
-        var result = empty.encode(new OkEncoder());
-        Assertions.assertTrue(result.isEmpty());
-    }
-
-    @Test
-    void encode_custom_ok() {
-        var result = data.encode(new OkEncoder());
-        Assertions.assertTrue(result.isPresent());
-        Assertions.assertTrue(result.get().isOk());
-        Assertions.assertEquals("abc", result.get().get());
-    }
-
-    @Test
-    void encode_custom_err() {
-        EncodingException err = new EncodingException("nay");
-        var result = data.encode(bytes -> Result.err(err));
-        assertTrue(result.isPresent());
-        assertTrue(result.get().isErr());
-        assertSame(err, result.get().getErr());
-    }
-
-    @Test
-    void encode_custom_null_arg() {
-        assertThrows(IllegalArgumentException.class, () -> data.encode((Encoder<?>) null));
+        assertThrows(IllegalArgumentException.class, () -> data.encode(null));
     }
 
     @Test
@@ -167,13 +137,6 @@ class DataTest {
         Path nonExistentFile = home.resolve("nonExistentDir/file.txt");
         var result = data.dumpTo(nonExistentFile);
         assertTrue(result.isErr());
-    }
-
-    static class OkEncoder implements Encoder<String> {
-        @Override
-        public Result<String, EncodingException> encode(byte[] data) {
-            return Result.ok(new String(data, StandardCharsets.UTF_8));
-        }
     }
 
 }

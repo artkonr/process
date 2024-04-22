@@ -31,7 +31,6 @@
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <version.result>1.1.1</version.result>
-        <version.slf4j>2.0.13</version.slf4j>
         <version.lombok>1.18.32</version.lombok>
         <version.junit>5.10.2</version.junit>
     </properties>
@@ -43,11 +42,6 @@
             <version>${version.result}</version>
         </dependency>
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${version.slf4j}</version>
-        </dependency>
-        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>${version.lombok}</version>
@@ -57,11 +51,6 @@
             <artifactId>junit-jupiter</artifactId>
             <version>${version.junit}</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>${version.slf4j}</version>
         </dependency>
     </dependencies>
 
@@ -206,7 +195,6 @@
                 <configuration>
                     <excludes>
                         <exclude>**/*Test.class</exclude>
-                        <exclude>**/EncodingException.class</exclude>
                     </excludes>
                 </configuration>
                 <executions>

@@ -4,7 +4,7 @@ import io.github.artkonr.process.types.TestProcess;
 import io.github.artkonr.result.Result;
 import org.junit.jupiter.api.Test;
 
-import java.io.*;
+import java.io.IOException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -45,7 +45,7 @@ class CmdTest {
 
         assertEquals(
                 List.of(List.of("pwd"), List.of("tr", "-d", "/")),
-                chain.getPipeline().stream().map(ProcessBuilder::command).toList()
+                chain.pipeline.stream().map(ProcessBuilder::command).toList()
         );
     }
 
@@ -60,7 +60,7 @@ class CmdTest {
         Chain chain = shell.pipeTo("tr", "-d", "/");
         assertEquals(
                 List.of(List.of("pwd"), List.of("tr", "-d", "/")),
-                chain.getPipeline().stream().map(ProcessBuilder::command).toList()
+                chain.pipeline.stream().map(ProcessBuilder::command).toList()
         );
     }
 
@@ -76,7 +76,7 @@ class CmdTest {
         Chain chain = first.pipeTo(then);
         assertEquals(
                 List.of(List.of("pwd"), List.of("tr", "-d", "/")),
-                chain.getPipeline().stream().map(ProcessBuilder::command).toList()
+                chain.pipeline.stream().map(ProcessBuilder::command).toList()
         );
     }
 
