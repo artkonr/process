@@ -31,9 +31,6 @@ class UtilTest {
 
     @Test
     void readByteArray__ok__all_whitespace() {
-        InputStream stream = new ByteArrayInputStream(new byte[]{ 10, 10, 10 });
-        BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-
         byte[] result = Util.readByteArray(new byte[]{ 10, 10, 10 });
         assertArrayEquals(new byte[0], result);
     }
@@ -57,7 +54,7 @@ class UtilTest {
         );
         BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
 
-        Result<byte[], CmdException> result = Util.read(reader);
+        Result<byte[], Exception> result = Util.read(reader);
         assertTrue(result.isErr());
         assertInstanceOf(CmdException.class, result.getErr());
         assertNotNull(result.getErr().getCause());
@@ -71,7 +68,7 @@ class UtilTest {
         InputStream stream = new ByteArrayInputStream(data.getBytes(StandardCharsets.UTF_8));
         BufferedReader reader = new BrokenReader(stream, thrown);
 
-        Result<byte[], CmdException> result = Util.read(reader);
+        Result<byte[], Exception> result = Util.read(reader);
         assertTrue(result.isErr());
         assertInstanceOf(CmdException.class, result.getErr());
         assertNotNull(result.getErr().getCause());

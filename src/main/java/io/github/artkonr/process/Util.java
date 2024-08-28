@@ -44,7 +44,7 @@ class Util {
      * @param reader reader
      * @return byte array wrapped in a {@link Result}
      */
-    static Result<byte[], CmdException> read(BufferedReader reader) {
+    static Result<byte[], Exception> read(BufferedReader reader) {
         try (
                 BufferedReader input = reader;
                 ByteArrayOutputStream buf = new ByteArrayOutputStream();
@@ -54,7 +54,7 @@ class Util {
             writer.flush();
             return Result.ok(readByteArray(buf.toByteArray()));
         } catch (IOException ex) {
-            return Result.err(new CmdException("failed to read input", ex));
+            return Result.err(new CmdException("failed to read stdout/stderr", ex));
         }
     }
 
