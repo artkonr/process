@@ -42,6 +42,10 @@ public interface Output {
         return exitcode() == 0;
     }
 
+    default boolean exitedWithError() {
+        return !exitedNormally();
+    }
+
     /**
      * Checks if {@code this} instance has any output.
      * @return {@code true} if {@code this} instance does not contain

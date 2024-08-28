@@ -57,7 +57,7 @@ class UtilTest {
         );
         BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
 
-        Result<byte[], CmdException> result = Util.read(reader);
+        Result<byte[], Exception> result = Util.read(reader);
         assertTrue(result.isErr());
         assertInstanceOf(CmdException.class, result.getErr());
         assertNotNull(result.getErr().getCause());
@@ -71,7 +71,7 @@ class UtilTest {
         InputStream stream = new ByteArrayInputStream(data.getBytes(StandardCharsets.UTF_8));
         BufferedReader reader = new BrokenReader(stream, thrown);
 
-        Result<byte[], CmdException> result = Util.read(reader);
+        Result<byte[], Exception> result = Util.read(reader);
         assertTrue(result.isErr());
         assertInstanceOf(CmdException.class, result.getErr());
         assertNotNull(result.getErr().getCause());

@@ -90,7 +90,7 @@ class CmdTest {
         Process process = TestProcess.builder()
                 .stdout("abc")
                 .build();
-        Result<Process, IOException> invoke = Result.ok(process);
+        Result<Process, Exception> invoke = Result.ok(process);
         Result<Output, CmdException> result = Cmd.handle(invoke, "pwd");
         assertTrue(result.isOk());
         assertEquals(0, result.get().exitcode());
@@ -105,7 +105,7 @@ class CmdTest {
                 .stdout("abc")
                 .stderr("fail")
                 .build();
-        Result<Process, IOException> invoke = Result.ok(process);
+        Result<Process, Exception> invoke = Result.ok(process);
         Result<Output, CmdException> result = Cmd.handle(invoke, "pwd");
         assertTrue(result.isErr());
         String msg = result.getErr().getMessage();
@@ -116,7 +116,7 @@ class CmdTest {
 
     @Test
     void handle__err__process_api_failed() {
-        Result<Process, IOException> invoke = Result.err(new IOException("fail"));
+        Result<Process, Exception> invoke = Result.err(new IOException("fail"));
         Result<Output, CmdException> result = Cmd.handle(invoke, "pwd");
         assertTrue(result.isErr());
         assertNotNull(result.getErr().getCause());
@@ -129,7 +129,7 @@ class CmdTest {
                 .stdout("abc")
                 .failure(TestProcess.Failure.STREAM_READ_ERR)
                 .build();
-        Result<Process, IOException> invoke = Result.ok(process);
+        Result<Process, Exception> invoke = Result.ok(process);
         Result<Output, CmdException> result = Cmd.handle(invoke, "pwd");
         assertTrue(result.isErr());
         assertEquals("failed to read stdout", result.getErr().getCause().getMessage());
@@ -141,7 +141,7 @@ class CmdTest {
                 .stdout("abc")
                 .failure(TestProcess.Failure.WAIT_FOR_COMPLETION_INTERRUPTED)
                 .build();
-        Result<Process, IOException> invoke = Result.ok(process);
+        Result<Process, Exception> invoke = Result.ok(process);
         Result<Output, CmdException> result = Cmd.handle(invoke, "pwd");
         assertTrue(result.isErr());
         assertNotNull(result.getErr().getCause());
@@ -154,7 +154,7 @@ class CmdTest {
                 .stdout("abc")
                 .failure(TestProcess.Failure.GENERIC_ERROR_INJECTED)
                 .build();
-        Result<Process, IOException> invoke = Result.ok(process);
+        Result<Process, Exception> invoke = Result.ok(process);
         assertThrows(RuntimeException.class, () -> Cmd.handle(invoke, "pwd"));
     }
 

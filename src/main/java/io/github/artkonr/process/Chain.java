@@ -4,7 +4,6 @@ import io.github.artkonr.result.Result;
 import io.github.artkonr.result.TakeFrom;
 import lombok.NonNull;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -100,8 +99,8 @@ public class Chain implements Shell {
      */
     @Override
     public Result<io.github.artkonr.process.Output, CmdException> invoke() {
-        Result<List<Process>, IOException> invoked = Result
-                .wrap(IOException.class, () -> ProcessBuilder.startPipeline(pipeline));
+        Result<List<Process>, Exception> invoked = Result
+                .wrap(() -> ProcessBuilder.startPipeline(pipeline));
 
         int endI = pipeline.size() - 1;
         var fin = handle(

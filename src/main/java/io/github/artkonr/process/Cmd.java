@@ -3,7 +3,6 @@ package io.github.artkonr.process;
 import io.github.artkonr.result.Result;
 import lombok.NonNull;
 
-import java.io.IOException;
 
 import static io.github.artkonr.process.Util.*;
 
@@ -80,7 +79,7 @@ public class Cmd implements Shell {
     @Override
     public Result<io.github.artkonr.process.Output, CmdException> invoke() {
         return handle(
-                Result.wrap(IOException.class, handle::start),
+                Result.wrap(handle::start),
                 getCmd(handle)
         );
     }
@@ -182,28 +181,34 @@ public class Cmd implements Shell {
      * @param cmd invoked command
      * @return invocation {@link Result}
      */
-    static Result<io.github.artkonr.process.Output, CmdException> handle(Result<Process, IOException> result,
+    static Result<io.github.artkonr.process.Output, CmdException> handle(Result<Process, Exception> result,
                                                                          String cmd) {
         return result
-                .mapErr(CmdException::wrap)
                 .flatMap(process -> Result
                         .wrap(InterruptedException.class, process::waitFor)
-                        .mapErr(CmdException::wrap)
-                        .flatMap(exitcode -> read(process.inputReader())
+                        .upcast()
+                        .flatMap(exitCode ->
+                                 read(process.inputReader())
                                 .fuse(read(process.errorReader()))
-                                .map(fuse -> Output.from(process.pid(), cmd, exitcode, fuse.left(), fuse.right()))
+                                .map(fuse -> Output.from(
+                                        process.pid(),
+                                        cmd,
+                                        exitCode,
+                                        fuse.left(),
+                                        fuse.right()
+                                ))
                         )
                 )
-                .taint(
-                        output -> !output.exitedNormally(),
+                .mapErr(ex -> new CmdException("command failed", ex))
+                .fork(
+                        io.github.artkonr.process.Output::exitedWithError,
                         output -> CmdException.errorExitCode(
                                 0,
                                 output.command(),
                                 output.exitcode(),
                                 output.stderr().encode().orElse("n/a")
                         )
-                )
-                .mapErr(CmdException::wrap);
+                );
     }
 
     /**

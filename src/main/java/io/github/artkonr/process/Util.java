@@ -44,7 +44,7 @@ class Util {
      * @param reader reader
      * @return byte array wrapped in a {@link Result}
      */
-    static Result<byte[], CmdException> read(BufferedReader reader) {
+    static Result<byte[], Exception> read(BufferedReader reader) {
         try (
                 BufferedReader input = reader;
                 ByteArrayOutputStream buf = new ByteArrayOutputStream();
