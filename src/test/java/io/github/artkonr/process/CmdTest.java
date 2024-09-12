@@ -66,7 +66,7 @@ class CmdTest {
 
     @Test
     void pipeTo__text_command__null_arg() {
-        assertThrows(IllegalArgumentException.class, () -> Cmd.from("pwd").pipeTo(null, null));
+        assertThrows(IllegalArgumentException.class, () -> Cmd.from("pwd").pipeTo(null, (String[]) null));
     }
 
     @Test
@@ -132,7 +132,7 @@ class CmdTest {
         Result<Process, Exception> invoke = Result.ok(process);
         Result<Output, CmdException> result = Cmd.handle(invoke, "pwd");
         assertTrue(result.isErr());
-        assertEquals("failed to read stdout", result.getErr().getCause().getMessage());
+        assertEquals("failed to read stdout/stderr", result.getErr().getCause().getMessage());
     }
 
     @Test

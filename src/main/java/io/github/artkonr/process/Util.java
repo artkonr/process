@@ -54,7 +54,7 @@ class Util {
             writer.flush();
             return Result.ok(readByteArray(buf.toByteArray()));
         } catch (IOException ex) {
-            return Result.err(new CmdException("failed to read input", ex));
+            return Result.err(new CmdException("failed to read stdout/stderr", ex));
         }
     }
 

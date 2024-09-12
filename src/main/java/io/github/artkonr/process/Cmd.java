@@ -201,7 +201,7 @@ public class Cmd implements Shell {
                 )
                 .mapErr(ex -> new CmdException("command failed", ex))
                 .fork(
-                        io.github.artkonr.process.Output::exitedWithError,
+                        output -> !output.exitedNormally(),
                         output -> CmdException.errorExitCode(
                                 0,
                                 output.command(),

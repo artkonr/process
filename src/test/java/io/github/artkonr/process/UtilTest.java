@@ -31,9 +31,6 @@ class UtilTest {
 
     @Test
     void readByteArray__ok__all_whitespace() {
-        InputStream stream = new ByteArrayInputStream(new byte[]{ 10, 10, 10 });
-        BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-
         byte[] result = Util.readByteArray(new byte[]{ 10, 10, 10 });
         assertArrayEquals(new byte[0], result);
     }
