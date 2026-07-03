@@ -184,10 +184,10 @@ public class Cmd implements Shell {
     static Result<io.github.artkonr.process.Output, CmdException> handle(Result<Process, Exception> result,
                                                                          String cmd) {
         return result
-                .flatMap(process -> Result
+                .then(process -> Result
                         .wrap(InterruptedException.class, process::waitFor)
                         .upcast()
-                        .flatMap(exitCode ->
+                        .then(exitCode ->
                                  read(process.inputReader())
                                 .fuse(read(process.errorReader()))
                                 .map(fuse -> Output.from(
@@ -199,8 +199,8 @@ public class Cmd implements Shell {
                                 ))
                         )
                 )
-                .mapErr(ex -> new CmdException("command failed", ex))
-                .fork(
+                .<CmdException>stack(ex -> new CmdException("command failed", ex))
+                .taint(
                         output -> !output.exitedNormally(),
                         output -> CmdException.errorExitCode(
                                 0,

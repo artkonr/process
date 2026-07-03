@@ -1,5 +1,7 @@
 package io.github.artkonr.process;
 
+import io.github.artkonr.result.Err;
+import io.github.artkonr.result.Ok;
 import io.github.artkonr.result.Result;
 
 import java.io.BufferedReader;
@@ -52,9 +54,9 @@ class Util {
         ) {
             input.transferTo(writer);
             writer.flush();
-            return Result.ok(readByteArray(buf.toByteArray()));
+            return new Ok<>(readByteArray(buf.toByteArray()));
         } catch (IOException ex) {
-            return Result.err(new CmdException("failed to read stdout/stderr", ex));
+            return new Err<>(new CmdException("failed to read stdout/stderr", ex));
         }
     }
 

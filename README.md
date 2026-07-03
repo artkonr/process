@@ -6,7 +6,7 @@ A simplistic toolkit to invoke command-line applications and handle their output
 
 ## Getting started
 
-Library installation is available for [Maven](#maven) and [Gradle](#gradle) and targets Java 17.
+Library installation is available for [Maven](#maven) and [Gradle](#gradle) and targets Java 21.
 
 ### Maven
 
@@ -41,7 +41,7 @@ import io.github.artkonr.result.Result;
 import java.util.Optional;
 
 public class Program {
-    public static void main(String[] args) {
+    static void main(String[] args) {
         Output invocation = Cmd.from("whoami")
                 .invoke().unwrap();
         assert invocation.exitedNormally();
@@ -62,7 +62,7 @@ import io.github.artkonr.result.Result;
 import java.util.Optional;
 
 public class Program {
-    public static void main(String[] args) {
+    static void main(String[] args) {
         // we know for a fact that calling `curl`
         // with no arguments will result in a non-0
         // exitcode + some help info
@@ -98,7 +98,7 @@ import io.github.artkonr.result.Result;
 import java.util.Optional;
 
 public class Program {
-    public static void main(String[] args) {
+    static void main(String[] args) {
         // we know for a fact that `wget` writes
         // the log of download to stderr
         Output invocation = Cmd.from("wget", "https://www.google.com")
@@ -122,7 +122,7 @@ import io.github.artkonr.result.Result;
 import java.util.Optional;
 
 public class Program {
-    public static void main(String[] args) {
+    static void main(String[] args) {
         Output invocation = Chain.from("pwd")
                 .pipeTo("tr", "-d", "/")
                 .invoke()
