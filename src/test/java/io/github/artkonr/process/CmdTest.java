@@ -1,6 +1,8 @@
 package io.github.artkonr.process;
 
 import io.github.artkonr.process.types.TestProcess;
+import io.github.artkonr.result.Err;
+import io.github.artkonr.result.Ok;
 import io.github.artkonr.result.Result;
 import org.junit.jupiter.api.Test;
 
@@ -90,12 +92,12 @@ class CmdTest {
         Process process = TestProcess.builder()
                 .stdout("abc")
                 .build();
-        Result<Process, Exception> invoke = Result.ok(process);
+        Result<Process, Exception> invoke = new Ok<>(process);
         Result<Output, CmdException> result = Cmd.handle(invoke, "pwd");
         assertTrue(result.isOk());
-        assertEquals(0, result.get().exitcode());
-        assertTrue(result.get().stdout().encode().isPresent());
-        assertEquals("abc", result.get().stdout().encode().orElseThrow());
+        assertEquals(0, result.value().exitcode());
+        assertTrue(result.value().stdout().encode().isPresent());
+        assertEquals("abc", result.value().stdout().encode().orElseThrow());
     }
 
     @Test
@@ -105,10 +107,10 @@ class CmdTest {
                 .stdout("abc")
                 .stderr("fail")
                 .build();
-        Result<Process, Exception> invoke = Result.ok(process);
+        Result<Process, Exception> invoke = new Ok<>(process);
         Result<Output, CmdException> result = Cmd.handle(invoke, "pwd");
         assertTrue(result.isErr());
-        String msg = result.getErr().getMessage();
+        String msg = result.err().getMessage();
         assertTrue(msg.contains("'fail'"));
         assertTrue(msg.contains("actual=31"));
         assertTrue(msg.contains("'pwd'"));
@@ -116,11 +118,11 @@ class CmdTest {
 
     @Test
     void handle__err__process_api_failed() {
-        Result<Process, Exception> invoke = Result.err(new IOException("fail"));
+        Result<Process, Exception> invoke = new Err<>(new IOException("fail"));
         Result<Output, CmdException> result = Cmd.handle(invoke, "pwd");
         assertTrue(result.isErr());
-        assertNotNull(result.getErr().getCause());
-        assertInstanceOf(IOException.class, result.getErr().getCause());
+        assertNotNull(result.err().getCause());
+        assertInstanceOf(IOException.class, result.err().getCause());
     }
 
     @Test
@@ -129,10 +131,10 @@ class CmdTest {
                 .stdout("abc")
                 .failure(TestProcess.Failure.STREAM_READ_ERR)
                 .build();
-        Result<Process, Exception> invoke = Result.ok(process);
+        Result<Process, Exception> invoke = new Ok<>(process);
         Result<Output, CmdException> result = Cmd.handle(invoke, "pwd");
         assertTrue(result.isErr());
-        assertEquals("failed to read stdout/stderr", result.getErr().getCause().getMessage());
+        assertEquals("failed to read stdout/stderr", result.err().getCause().getMessage());
     }
 
     @Test
@@ -141,11 +143,11 @@ class CmdTest {
                 .stdout("abc")
                 .failure(TestProcess.Failure.WAIT_FOR_COMPLETION_INTERRUPTED)
                 .build();
-        Result<Process, Exception> invoke = Result.ok(process);
+        Result<Process, Exception> invoke = new Ok<>(process);
         Result<Output, CmdException> result = Cmd.handle(invoke, "pwd");
         assertTrue(result.isErr());
-        assertNotNull(result.getErr().getCause());
-        assertInstanceOf(InterruptedException.class, result.getErr().getCause());
+        assertNotNull(result.err().getCause());
+        assertInstanceOf(InterruptedException.class, result.err().getCause());
     }
 
     @Test
@@ -154,7 +156,7 @@ class CmdTest {
                 .stdout("abc")
                 .failure(TestProcess.Failure.GENERIC_ERROR_INJECTED)
                 .build();
-        Result<Process, Exception> invoke = Result.ok(process);
+        Result<Process, Exception> invoke = new Ok<>(process);
         assertThrows(RuntimeException.class, () -> Cmd.handle(invoke, "pwd"));
     }
 
@@ -163,7 +165,7 @@ class CmdTest {
         Cmd sh = Cmd.from("pwd");
         Result<Output, CmdException> result = sh.invoke();
         assertTrue(result.isOk());
-        assertEquals(0, result.get().exitcode());
+        assertEquals(0, result.value().exitcode());
     }
 
     @Test

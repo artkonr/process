@@ -1,7 +1,6 @@
 package io.github.artkonr.process;
 
-import io.github.artkonr.result.FlagResult;
-import io.github.artkonr.result.Result;
+import io.github.artkonr.result.Done;
 import lombok.NonNull;
 
 import java.io.IOException;
@@ -59,18 +58,18 @@ public class Data {
      * <p>If the file is not present, it is created. Intermediate
      *  directories are not created.
      * @param location target file
-     * @return write result as {@link FlagResult}
+     * @return write result as {@link Done}
      */
-    public FlagResult<IOException> dumpTo(@NonNull Path location) {
-        return Result
+    public Done<IOException> dumpTo(@NonNull Path location) {
+        return Done
                 .wrap(
                         IOException.class,
                         () -> Files.write(
                                 location,
                                 data,
                                 StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING
-                        ))
-                .drop();
+                        )
+                );
     }
 
     /**

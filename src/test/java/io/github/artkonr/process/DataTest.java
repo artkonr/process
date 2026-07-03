@@ -85,7 +85,7 @@ class DataTest {
         UUID id = UUID.randomUUID();
         Path file = home.resolve(id.toString());
         var result = data.dumpTo(file);
-        assertTrue(result.isOk());
+        assertTrue(result.isSuccess());
 
         try {
             byte[] read = Files.readAllBytes(file);
@@ -103,7 +103,7 @@ class DataTest {
         Files.createFile(file);
 
         var result = data.dumpTo(file);
-        assertTrue(result.isOk());
+        assertTrue(result.isSuccess());
 
         try {
             byte[] read = Files.readAllBytes(file);
@@ -122,7 +122,7 @@ class DataTest {
         Files.writeString(file, "previous text");
 
         var result = data.dumpTo(file);
-        assertTrue(result.isOk());
+        assertTrue(result.isSuccess());
 
         try {
             byte[] read = Files.readAllBytes(file);
@@ -136,7 +136,7 @@ class DataTest {
     void dumpTo_err() {
         Path nonExistentFile = home.resolve("nonExistentDir/file.txt");
         var result = data.dumpTo(nonExistentFile);
-        assertTrue(result.isErr());
+        assertTrue(result.isFailure());
     }
 
 }

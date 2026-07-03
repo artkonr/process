@@ -1,5 +1,6 @@
 package io.github.artkonr.process;
 
+import io.github.artkonr.result.Ok;
 import io.github.artkonr.result.Result;
 import io.github.artkonr.result.TakeFrom;
 import lombok.NonNull;
@@ -109,8 +110,8 @@ public class Chain implements Shell {
         );
         var intermediate = invoked
                 .map(processes -> processes.subList(0, endI))
-                .mapErr(CmdException::wrap)
-                .flatMap(processes -> handleIntermediate(processes, endI));
+                .<CmdException>stack(CmdException::wrap)
+                .then(processes -> handleIntermediate(processes, endI));
         return fin
                 .fuse(intermediate, TakeFrom.TAIL)
                 .map(fuse -> Output.from(fuse.left(), fuse.right()));
@@ -245,12 +246,12 @@ public class Chain implements Shell {
                                                                                             int toIndex) {
         return IntStream.range(0, toIndex)
                 .mapToObj(idx -> handle(
-                        Result.ok(processes.get(idx)),
+                        new Ok<>(processes.get(idx)),
                         getCmd(pipeline.get(idx))
                 ))
                 .collect(Collectors.collectingAndThen(
                         Collectors.toList(),
-                        Result::join
+                        items -> Result.join(items, TakeFrom.HEAD)
                 ));
     }
 }

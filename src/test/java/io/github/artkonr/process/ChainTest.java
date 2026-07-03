@@ -104,8 +104,8 @@ class ChainTest {
                 .pipeTo("tr", "-d", "/");
         Result<Output, CmdException> result = pipeline.invoke();
         assertTrue(result.isOk());
-        assertTrue(result.get().stdout().encode().isPresent());
-        assertEquals(-1, result.get().stdout().encode().get().indexOf('/'));
+        assertTrue(result.value().stdout().encode().isPresent());
+        assertEquals(-1, result.value().stdout().encode().get().indexOf('/'));
     }
 
     @Test
@@ -114,7 +114,7 @@ class ChainTest {
                 .pipeTo("tr", "-d", "'-'");
         Result<Output, CmdException> result = pipeline.invoke();
         assertTrue(result.isErr());
-        assertTrue(result.getErr().getMessage().contains("cmd='curl"));
+        assertTrue(result.err().getMessage().contains("cmd='curl"));
     }
 
     @Test
@@ -123,7 +123,7 @@ class ChainTest {
                 .pipeTo("tr");
         Result<Output, CmdException> result = pipeline.invoke();
         assertTrue(result.isErr());
-        assertTrue(result.getErr().getMessage().contains("cmd='curl'"));
+        assertTrue(result.err().getMessage().contains("cmd='curl'"));
     }
 
     @Test
@@ -133,7 +133,7 @@ class ChainTest {
                 .pipeTo("tr", "-d", "'-'");
         Result<Output, CmdException> result = pipeline.invoke();
         assertTrue(result.isErr());
-        assertTrue(result.getErr().getMessage().contains("cmd='curl"));
+        assertTrue(result.err().getMessage().contains("cmd='curl"));
     }
 
     @Test
@@ -141,8 +141,8 @@ class ChainTest {
         Chain pipeline = Chain.from("pwd");
         Result<Output, CmdException> result = pipeline.invoke();
         assertTrue(result.isOk());
-        assertTrue(result.get().stdout().encode().isPresent());
-        assertTrue(result.get().stdout().encode().get().indexOf('/') > -1);
+        assertTrue(result.value().stdout().encode().isPresent());
+        assertTrue(result.value().stdout().encode().get().indexOf('/') > -1);
     }
 
     @Test

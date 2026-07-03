@@ -56,9 +56,9 @@ class UtilTest {
 
         Result<byte[], Exception> result = Util.read(reader);
         assertTrue(result.isErr());
-        assertInstanceOf(CmdException.class, result.getErr());
-        assertNotNull(result.getErr().getCause());
-        assertSame(thrown, result.getErr().getCause());
+        assertInstanceOf(CmdException.class, result.err());
+        assertNotNull(result.err().getCause());
+        assertSame(thrown, result.err().getCause());
     }
 
     @Test
@@ -70,9 +70,9 @@ class UtilTest {
 
         Result<byte[], Exception> result = Util.read(reader);
         assertTrue(result.isErr());
-        assertInstanceOf(CmdException.class, result.getErr());
-        assertNotNull(result.getErr().getCause());
-        assertInstanceOf(IOException.class, result.getErr().getCause());
+        assertInstanceOf(CmdException.class, result.err());
+        assertNotNull(result.err().getCause());
+        assertInstanceOf(IOException.class, result.err().getCause());
     }
 
     @Test
